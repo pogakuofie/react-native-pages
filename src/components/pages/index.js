@@ -1,16 +1,16 @@
-import PropTypes from 'prop-types';
-import React, { PureComponent, Children } from 'react';
+import PropTypes from "prop-types";
+import React, { PureComponent, Children } from "react";
 import {
   View,
   ScrollView,
   SafeAreaView,
   Animated,
   Platform,
-  ViewPropTypes,
-} from 'react-native';
+} from "react-native";
+import { ViewPropTypes } from "deprecated-react-native-prop-types";
 
-import Indicator from '../indicator';
-import styles from './styles';
+import Indicator from "../indicator";
+import styles from "./styles";
 
 const floatEpsilon = Math.pow(2, -23);
 
@@ -27,8 +27,8 @@ export default class Pages extends PureComponent {
     scrollEventThrottle: 25,
     scrollsToTop: false,
 
-    indicatorColor: 'rgb(255, 255, 255)',
-    indicatorOpacity: 0.30,
+    indicatorColor: "rgb(255, 255, 255)",
+    indicatorOpacity: 0.3,
 
     startPage: 0,
 
@@ -43,11 +43,11 @@ export default class Pages extends PureComponent {
     indicatorColor: PropTypes.string,
     indicatorOpacity: PropTypes.number,
     indicatorPosition: PropTypes.oneOf([
-      'none',
-      'top',
-      'right',
-      'bottom',
-      'left',
+      "none",
+      "top",
+      "right",
+      "bottom",
+      "left",
     ]),
 
     startPage: PropTypes.number,
@@ -115,7 +115,7 @@ export default class Pages extends PureComponent {
     let { width, height } = event.nativeEvent.layout;
     let { onLayout } = this.props;
 
-    if ('function' === typeof onLayout) {
+    if ("function" === typeof onLayout) {
       onLayout(event);
     }
 
@@ -128,10 +128,10 @@ export default class Pages extends PureComponent {
     }
 
     let { horizontal } = this.props;
-    let { [horizontal? 'x' : 'y']: offset } = event.nativeEvent.contentOffset;
-    let { [horizontal? 'width' : 'height']: base, progress } = this.state;
+    let { [horizontal ? "x" : "y"]: offset } = event.nativeEvent.contentOffset;
+    let { [horizontal ? "width" : "height"]: base, progress } = this.state;
 
-    progress.setValue(this.progress = base? offset / base : 0);
+    progress.setValue((this.progress = base ? offset / base : 0));
 
     let discreteProgress = Math.round(this.progress);
 
@@ -149,7 +149,7 @@ export default class Pages extends PureComponent {
   onScrollBeginDrag() {
     let { onScrollStart } = this.props;
 
-    if ('function' === typeof onScrollStart) {
+    if ("function" === typeof onScrollStart) {
       onScrollStart(Math.round(this.progress));
     }
 
@@ -160,7 +160,7 @@ export default class Pages extends PureComponent {
     let { horizontal } = this.props;
 
     /* Vertical pagination is not working on android, scroll by hands */
-    if ('android' === Platform.OS && !horizontal) {
+    if ("android" === Platform.OS && !horizontal) {
       this.scrollToPage(Math.round(this.progress));
     }
 
@@ -170,7 +170,7 @@ export default class Pages extends PureComponent {
   onScrollEnd() {
     let { onScrollEnd } = this.props;
 
-    if ('function' === typeof onScrollEnd) {
+    if ("function" === typeof onScrollEnd) {
       onScrollEnd(Math.round(this.progress));
     }
   }
@@ -178,7 +178,7 @@ export default class Pages extends PureComponent {
   onHalfway(nextIndex) {
     let { onHalfway } = this.props;
 
-    if ('function' === typeof onHalfway && nextIndex >= 0) {
+    if ("function" === typeof onHalfway && nextIndex >= 0) {
       onHalfway(nextIndex, this.activeIndex);
     }
 
@@ -187,7 +187,7 @@ export default class Pages extends PureComponent {
 
   scrollToPage(page, animated = true) {
     let { horizontal } = this.props;
-    let { [horizontal? 'width' : 'height']: base } = this.state;
+    let { [horizontal ? "width" : "height"]: base } = this.state;
     let { current: scroll } = this.scrollRef;
 
     if (animated) {
@@ -196,7 +196,7 @@ export default class Pages extends PureComponent {
 
     if (this.mounted && scroll) {
       scroll.scrollTo({
-        [horizontal? 'x' : 'y']: page * base,
+        [horizontal ? "x" : "y"]: page * base,
         animated,
       });
     }
@@ -216,9 +216,7 @@ export default class Pages extends PureComponent {
 
     let pages = Children.count(children);
 
-    let pageStyle = (horizontal && rtl)?
-      styles.rtl:
-      null;
+    let pageStyle = horizontal && rtl ? styles.rtl : null;
 
     /* Adjust progress by page index */
     progress = Animated.add(progress, -index);
@@ -240,19 +238,17 @@ export default class Pages extends PureComponent {
   renderPager(pager) {
     let { renderPager, horizontal, rtl } = this.props;
 
-    if ('function' === typeof renderPager) {
+    if ("function" === typeof renderPager) {
       return renderPager({ horizontal, rtl, ...pager });
     }
 
     let { indicatorPosition } = pager;
 
-    if ('none' === indicatorPosition) {
+    if ("none" === indicatorPosition) {
       return null;
     }
 
-    let indicatorStyle = (horizontal && rtl)?
-      styles.rtl:
-      null;
+    let indicatorStyle = horizontal && rtl ? styles.rtl : null;
 
     let style = [styles[indicatorPosition], indicatorStyle];
 
@@ -265,19 +261,17 @@ export default class Pages extends PureComponent {
 
   renderPages(props) {
     let { horizontal, rtl, style, children } = this.props;
-    let { [horizontal? 'width' : 'height']: base, layout } = this.state;
+    let { [horizontal ? "width" : "height"]: base, layout } = this.state;
 
     if (!layout) {
       return null;
     }
 
-    let scrollStyle = (horizontal && rtl)?
-      styles.rtl:
-      null;
+    let scrollStyle = horizontal && rtl ? styles.rtl : null;
 
     let contentOffset = {
-      [horizontal? 'x' : 'y']: base * Math.floor(this.progress),
-      [horizontal? 'y' : 'x']: 0,
+      [horizontal ? "x" : "y"]: base * Math.floor(this.progress),
+      [horizontal ? "y" : "x"]: 0,
     };
 
     return (
@@ -304,21 +298,20 @@ export default class Pages extends PureComponent {
       children,
       indicatorColor,
       indicatorOpacity,
-      indicatorPosition = horizontal? 'bottom' : 'right',
+      indicatorPosition = horizontal ? "bottom" : "right",
       ...props
     } = this.props;
 
     let pages = Children.count(children);
 
-    let Pager = () => (
+    let Pager = () =>
       this.renderPager({
         pages,
         progress,
         indicatorColor,
         indicatorOpacity,
         indicatorPosition,
-      })
-    );
+      });
 
     return (
       <View style={[styles.container, containerStyle]} onLayout={this.onLayout}>
